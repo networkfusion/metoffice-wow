@@ -21,6 +21,8 @@
 using System;
 using System.Diagnostics;
 using System.Net;
+using MetOffice.WoW.ApiSchema;
+using nanoFramework.Json;
 
 namespace MetOffice.WoW
 {
@@ -91,10 +93,12 @@ namespace MetOffice.WoW
             //httpWebRequest.SslProtocols = System.Net.Security.SslProtocols.Tls12;
 
             // Now we need to add the actual sensor data.
-            //foreach (var item in ApiSchema.VersionOne)
+            var sensorData = (VersionOne)JsonConvert.DeserializeObject(data, typeof(VersionOne));
+            //We need to itterate through each item in the class as a key and value pair.
+            //foreach (var item in sensorData) //being property of the class...
             //{
-            //if the var is not null or empty
-            //    urlHeader += $item
+            //    if (!string.IsNullOrEmpty(item))
+            //        url += $"${$item}";
             //}
 
             //need to validate the schema parameters?!
@@ -120,9 +124,9 @@ namespace MetOffice.WoW
         /// <remarks>
         /// https://mowowprod.portal.azure-api.net/documentation/how-to-connect-to-wow-api
         /// </remarks>
-        private static int HandleV2ObservationData(string url)
+        private static int HandleV2ObservationData(string data, ConnectionInformationV1 connectionInfo) //this needs to target v2!
         {
-            using (var httpWebRequest = (HttpWebRequest)WebRequest.Create(url))
+            using (var httpWebRequest = (HttpWebRequest)WebRequest.Create(connectionInfo.Url))
             {
                 ////httpClient.BaseAddress = new Uri("https://mowowprod.azure-api.net");
                 //httpWebRequest.Headers.Add("Ocp-Apim-Subscription-Key", subscriptionKey);
